@@ -8,35 +8,44 @@ jobs:
     name: 🎉 iOS Build
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - uses: subosito/flutter-action@v2
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
           architecture: x64
-      - run: flutter pub get
-      
 
-      - run: pod repo update
-        working-directory: ios
+      - name: Install Flutter dependencies
+        run: flutter pub get
+        working-directory: ./YOUR_FLUTTER_PROJECT_DIRECTORY # Replace with the correct Flutter project directory
 
-      - run: flutter build ios --release --no-codesign
+      - name: Update CocoaPods repo
+        run: pod repo update
+        working-directory: ./YOUR_FLUTTER_PROJECT_DIRECTORY/ios # Replace with the correct iOS directory path
 
-      - run: mkdir Payload
-        working-directory: build/ios/iphoneos
+      - name: Build iOS release
+        run: flutter build ios --release --no-codesign
+        working-directory: ./YOUR_FLUTTER_PROJECT_DIRECTORY # Replace with the correct Flutter project directory
 
-      - run: mv Runner.app/ Payload
-        working-directory: build/ios/iphoneos
+      - name: Prepare Payload directory
+        run: mkdir Payload
+        working-directory: ./YOUR_FLUTTER_PROJECT_DIRECTORY/build/ios/iphoneos
 
-      - name: Zip output
+      - name: Move app to Payload
+        run: mv Runner.app/ Payload
+        working-directory: ./YOUR_FLUTTER_PROJECT_DIRECTORY/build/ios/iphoneos
+
+      - name: Create IPA file
         run: zip -qq -r -9 FlutterIpaExport.ipa Payload
-        working-directory: build/ios/iphoneos
+        working-directory: ./YOUR_FLUTTER_PROJECT_DIRECTORY/build/ios/iphoneos
 
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/ios/iphoneos/FlutterIpaExport.ipa
+          file: ./YOUR_FLUTTER_PROJECT_DIRECTORY/build/ios/iphoneos/FlutterIpaExport.ipa
           tag: v1.0
           overwrite: true
-          body: "This is first release"
+          body: "This is the first release"
