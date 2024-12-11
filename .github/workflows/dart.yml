@@ -18,17 +18,15 @@ jobs:
           architecture: x64
 
       - name: Install Flutter dependencies
-        run: flutter pub get
-        working-directory: ./YOUR_FLUTTER_PROJECT_DIRECTORY # Replace with the correct Flutter project directory
-
+      
+        working-directory: ./YOUR_FLUTTER_PROJECT_DIRECTORY
       - name: Update CocoaPods repo
         run: pod repo update
-        working-directory: ./YOUR_FLUTTER_PROJECT_DIRECTORY/ios # Replace with the correct iOS directory path
+        working-directory: ./YOUR_FLUTTER_PROJECT_DIRECTORY/ios 
 
       - name: Build iOS release
         run: flutter build ios --release --no-codesign
-        working-directory: ./YOUR_FLUTTER_PROJECT_DIRECTORY # Replace with the correct Flutter project directory
-
+        working-directory: ./YOUR_FLUTTER_PROJECT_DIRECTORY 
       - name: Prepare Payload directory
         run: mkdir Payload
         working-directory: ./YOUR_FLUTTER_PROJECT_DIRECTORY/build/ios/iphoneos
